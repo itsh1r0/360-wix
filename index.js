@@ -169,6 +169,14 @@
     document.body.classList.add('fullscreen-disabled');
   }
 
+  // Setup view control buttons.
+  if (!data.settings.viewControlButtons) {
+    var viewControlButtons = document.querySelectorAll('.viewControlButton');
+    for (var i = 0; i < viewControlButtons.length; i++) {
+      viewControlButtons[i].style.display = 'none';
+    }
+  }
+
   // Set handler for scene list toggle.
   sceneListToggleElement.addEventListener('click', toggleSceneList);
 
@@ -210,6 +218,22 @@
   controls.registerMethod('rightElement', new Marzipano.ElementPressControlMethod(viewRightElement,  'x',  t_vel, friction), true);
   controls.registerMethod('inElement',    new Marzipano.ElementPressControlMethod(viewInElement,  'zoom', -z_vel, friction), true);
   controls.registerMethod('outElement',   new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom',  z_vel, friction), true);
+
+  // Keyboard controls
+  controls.registerMethod('upArrow',    new Marzipano.KeyControlMethod(38, 'y', -t_vel, friction), true);
+  controls.registerMethod('downArrow',  new Marzipano.KeyControlMethod(40, 'y',  t_vel, friction), true);
+  controls.registerMethod('leftArrow',  new Marzipano.KeyControlMethod(37, 'x', -t_vel, friction), true);
+  controls.registerMethod('rightArrow', new Marzipano.KeyControlMethod(39, 'x',  t_vel, friction), true);
+  controls.registerMethod('zoomInKey',  new Marzipano.KeyControlMethod(90, 'zoom', -z_vel, friction), true); // Z
+  controls.registerMethod('zoomOutKey', new Marzipano.KeyControlMethod(88, 'zoom',  z_vel, friction), true); // X
+
+  document.addEventListener('keydown', function(e) {
+    if (e.keyCode === 70) { // F key
+      if (screenfull.enabled) screenfull.toggle();
+    } else if (e.keyCode === 77) { // M key
+      if (globeToggleElement) globeToggleElement.click();
+    }
+  });
 
   function sanitize(s) {
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
@@ -348,7 +372,7 @@
     var closeWrapper = document.createElement('div');
     closeWrapper.classList.add('info-hotspot-close-wrapper');
     var closeIcon = document.createElement('img');
-    closeIcon.src = 'img/close.png';
+    closeIcon.src = 'img/pinned.png';
     closeIcon.classList.add('info-hotspot-close-icon');
     closeWrapper.appendChild(closeIcon);
 
@@ -372,16 +396,34 @@
     modal.classList.add('info-hotspot-modal');
     document.body.appendChild(modal);
 
-    var toggle = function() {
-      wrapper.classList.toggle('visible');
-      modal.classList.toggle('visible');
+    var isPinned = false;
+
+    var show = function() {
+      wrapper.classList.add('visible');
+      modal.classList.add('visible');
     };
 
-    // Show content when hotspot is clicked.
-    wrapper.querySelector('.info-hotspot-header').addEventListener('click', toggle);
+    var hide = function() {
+      if (!isPinned) {
+        wrapper.classList.remove('visible');
+        modal.classList.remove('visible');
+      }
+    };
 
-    // Hide content when close icon is clicked.
-    modal.querySelector('.info-hotspot-close-wrapper').addEventListener('click', toggle);
+    var togglePin = function() {
+      isPinned = !isPinned;
+
+      var bg = isPinned ? 'rgb(58, 68, 84)' : '';
+      wrapper.querySelector('.info-hotspot-close-wrapper').style.backgroundColor = bg;
+      modal.querySelector('.info-hotspot-close-wrapper').style.backgroundColor = bg;
+    };
+
+    // Show content on hover.
+    wrapper.addEventListener('mouseenter', show);
+    wrapper.addEventListener('mouseleave', hide);
+    
+    // Toggle pin on click
+    wrapper.addEventListener('click', togglePin);
 
     // Prevent touch and scroll events from reaching the parent element.
     // This prevents the view control logic from interfering with the hotspot.

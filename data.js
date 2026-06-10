@@ -45,6 +45,7 @@ var APP_DATA = {
     {
       "id": "02",
       "name": "Phòng Kỹ thuật trường quay",
+      "tiltCorrection": -0.0523,
       "levels": [
         {
           "tileSize": 256,
@@ -70,9 +71,11 @@ var APP_DATA = {
       ],
       "faceSize": 2992,
       "initialViewParameters": {
-        "yaw": 0.9396380972553438,
+        "yaw": -2.201954556334449,
         "pitch": -0.018792560341832854,
-        "fov": 1.489925106613882
+        "fov": 1.489925106613882,
+        "roll": 0,
+        
       },
       "linkHotspots": [
         {
@@ -136,7 +139,8 @@ var APP_DATA = {
           "yaw": 0.2920216367851278,
           "pitch": 0.25638299442873524,
           "title": "Trường quay 03",
-          "text": "Không gian ghi hình hiện đại, đa năng, chuyên dụng cho các chương trình thời sự, tọa đàm và chuyên mục chuyên sâu của Đài. Nơi ghi dấu sự chuyên nghiệp và kết nối trực quan giữa phát thanh viên với khán giả."
+          "text": "Không gian ghi hình hiện đại, đa năng, chuyên dụng cho các chương trình thời sự, tọa đàm và chuyên mục chuyên sâu của Đài. Nơi ghi dấu sự chuyên nghiệp và kết nối trực quan giữa phát thanh viên với khán giả.",
+          "click": "sub-info/03_1.html"
         }
       ]
     },

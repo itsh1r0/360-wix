@@ -32,6 +32,19 @@
   var globeToggleElement = document.querySelector('#globeToggle');
   var mapPopupElement = document.querySelector('#mapPopup');
   var mapOverlayElement = document.querySelector('#mapOverlay');
+  var infoOverlayElement = document.querySelector('#infoOverlay');
+  var infoPopupElement = document.querySelector('#infoPopup');
+  var infoIframeElement = document.querySelector('#infoIframe');
+
+  function closeInfoPopup() {
+    infoPopupElement.style.display = 'none';
+    if (infoOverlayElement) infoOverlayElement.style.display = 'none';
+    infoIframeElement.src = '';
+  }
+
+  if (infoOverlayElement) {
+    infoOverlayElement.addEventListener('click', closeInfoPopup);
+  }
 
   if (globeToggleElement) {
     globeToggleElement.addEventListener('click', function() {
@@ -421,12 +434,22 @@
     // Show content on hover.
     wrapper.addEventListener('mouseenter', show);
     wrapper.addEventListener('mouseleave', hide);
-    
-    // Toggle pin on click
-    wrapper.addEventListener('click', togglePin);
 
-    // Prevent touch and scroll events from reaching the parent element.
-    // This prevents the view control logic from interfering with the hotspot.
+    // Toggle pin on click
+    wrapper.addEventListener('click', function() {
+      if (hotspot.click) {
+        var infoPopup = document.getElementById('infoPopup');
+        var infoOverlay = document.getElementById('infoOverlay');
+        var infoIframe = document.getElementById('infoIframe');
+        infoIframe.src = hotspot.click;
+        infoPopup.style.display = 'block';
+        if (infoOverlay) infoOverlay.style.display = 'block';
+      } else {
+        togglePin();
+      }
+    });
+
+    // Prevent touch and scroll events from reaching the parent element.    // This prevents the view control logic from interfering with the hotspot.
     stopTouchAndScrollEventPropagation(wrapper);
 
     return wrapper;
